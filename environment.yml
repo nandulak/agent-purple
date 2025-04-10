@@ -1,0 +1,23 @@
+name: agent_purple
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - openai
+      - autogen
+      - gradio
+      - requests
+      - pyyaml
+      - stix2
+      - taxii2-client
+      - python-dotenv
+      - pytest
+      - black
+      - flake8
+      - mypy
+      - paramiko
+      - pygit2
+      - cryptography
