@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variable files
+.env
+
+# Data folders
+/data/mitre_attack/
+/data/mitre_atlas/
+
+# Logs and reports
+*.log
+*.report
+
+# AutoGen cache
+.autogen_cache/
+
+# Gradio frontend cache
+frontend/__pycache__/
+frontend/*.pyc
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Conda environment
+*.conda
+
+# Ignore compiled Python files
+*.pyc
+*.pyo
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
