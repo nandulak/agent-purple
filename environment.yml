@@ -17,7 +17,7 @@ dependencies:
       - pytest==8.3.5
       - black==25.1.0
       - flake8==7.2.0
-      - mypy==1.15.1
+      - mypy==1.15.0
       - paramiko==2.8.1
       - pygit2==1.17.0
       - cryptography==43.0.0
