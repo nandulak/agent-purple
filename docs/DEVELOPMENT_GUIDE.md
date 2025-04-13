@@ -386,6 +386,9 @@ MITRE ATT&CK® is a globally accessible knowledge base of adversary tactics and 
 
 **Implementation:**
 ```python
+# First install the mitreattack-python library
+# pip install mitreattack-python
+
 from utils.data_fetcher import fetch_mitre_attack_data
 
 attack_data = fetch_mitre_attack_data()
@@ -405,6 +408,7 @@ MITRE ATLAS (Adversarial Threat Landscape for Artificial-Intelligence Systems) i
 
 **Implementation:**
 ```python
+# ATLAS data is stored in a YAML file and can be accessed directly
 from utils.data_fetcher import fetch_mitre_atlas_data
 
 atlas_data = fetch_mitre_atlas_data()
@@ -414,10 +418,37 @@ def analyze_with_mitre_atlas(vulnerability):
     return analysis_result
 ```
 
+#### Data Fetcher Implementation
+
+The `utils/data_fetcher.py` module provides functions to retrieve and work with both MITRE ATT&CK and ATLAS data:
+
+1. **For MITRE ATT&CK:**
+   - Uses the official `mitreattack-python` library to fetch data
+   - Provides functions to query techniques, tactics, and other ATT&CK objects
+   - Implements local caching to reduce API calls
+   - Falls back to direct STIX data download when the library is unavailable
+
+2. **For MITRE ATLAS:**
+   - Retrieves the ATLAS.yaml file from the official GitHub repository
+   - Parses the YAML data to access tactics, techniques, and case studies
+   - Implements local caching for offline use
+
+3. **Key Functions:**
+   - `fetch_mitre_attack_data(domain, version)`: Fetches ATT&CK data for enterprise, mobile, or ICS domains
+   - `fetch_mitre_atlas_data()`: Retrieves MITRE ATLAS data from GitHub
+   - `get_attack_techniques()`, `get_atlas_techniques()`: Extract techniques from the data
+   - `map_vulnerability_to_attack()`, `map_vulnerability_to_atlas()`: Map vulnerabilities to the frameworks
+
+4. **Error Handling and Reliability:**
+   - Graceful degradation when network or resources are unavailable
+   - Comprehensive logging for operations and errors
+   - Automatic fallback to cached data when fresh data cannot be retrieved
+
 #### Best Practices
 - Keep data updated regularly
 - Use structured data formats for mapping vulnerabilities
 - Document findings in detail in the final report
+- Implement caching to reduce external API calls
 
 ### GitHub MCP Server Integration
 

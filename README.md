@@ -45,14 +45,36 @@ $ python frontend/app.py
 - **Blue Team Agent:** Suggests fixes for identified issues.
 - **Orchestration:** Coordinates agents using AutoGen.
 - **Frontend:** Gradio-based interface for user interaction.
+- **Data Fetcher:** Retrieves and processes MITRE ATT&CK and ATLAS data with intelligent caching.
+
+## Core Components
+
+### Data Fetcher
+The `utils/data_fetcher.py` module provides comprehensive functionality for retrieving, parsing, and utilizing threat intelligence data:
+
+- Retrieves MITRE ATT&CK data for enterprise, mobile, and ICS domains
+- Fetches MITRE ATLAS data specifically for AI system vulnerabilities
+- Implements local caching to minimize API calls and enable offline use
+- Maps vulnerabilities to specific tactics and techniques from both frameworks
+- Provides robust error handling and graceful degradation when resources are unavailable
+
+To test the data fetcher functionality:
+```bash
+# Run the data fetcher test
+$ python -m utils.data_fetcher
+```
 
 ## Project Structure
 ```
 agent_purple/
 ├── data/                      # Stores MITRE ATT&CK/ATLAS data
+│   ├── mitre_attack/         # Local cache for ATT&CK data
+│   └── mitre_atlas/          # Local cache for ATLAS data
 ├── agents/                   # Agent modules
 ├── frontend/                 # Gradio-based frontend
 ├── utils/                    # Utility modules
+│   ├── data_fetcher.py       # MITRE data retrieval and processing
+│   └── github_mcp_client.py  # GitHub repository interaction
 ├── .env                      # API keys and tokens
 ├── environment.yml           # Conda environment definition
 ├── main.py                   # Orchestration script
