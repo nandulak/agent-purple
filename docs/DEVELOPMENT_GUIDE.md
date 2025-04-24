@@ -17,7 +17,7 @@
   - [9. Final Submission](#9-final-submission)
 - [Key Technologies and Integration](#key-technologies-and-integration)
   - [MITRE ATT&CK® and ATLAS Integration](#mitre-attack-and-atlas-integration)
-  - [GitHub MCP Server Integration](#github-mcp-server-integration)
+  - [GitHub Client Integration](#github-client-integration)
   - [AutoGen Framework for Agent Orchestration](#autogen-framework-for-agent-orchestration)
   - [DSPy for Modular AI Development](#dspy-for-modular-ai-development)
 - [Agent Implementations](#agent-implementations)
@@ -52,7 +52,7 @@ The system comprises multiple autonomous agents that work together:
 5. **Frontend:** A Gradio web interface presents the final Markdown report
 
 ### System Workflow
-1. Clone the target repository using the GitHub MCP client
+1. Clone the target repository using the GitHub client
 2. Use the Red Team Agent to scan for vulnerabilities
 3. Pass the results to the Motivation Analysis Agent for root cause analysis
 4. Use the Blue Team Agent to suggest fixes
@@ -91,7 +91,7 @@ agent_purple/
 ├── frontend/
 │   └── app.py                           # Gradio-based frontend application
 ├── utils/
-│   ├── github_mcp_client.py             # GitHub repository interaction utility (via Git operations)
+│   ├── github_client.py                 # GitHub repository interaction utility (via direct Git operations)
 │   └── data_fetcher.py                  # Fetches MITRE ATT&CK/ATLAS data (using TAXII, requests, and pyyaml)
 ├── tests/                               # Unit and integration tests
 ├── .env                                 # Securely stores API keys (e.g., OPENAI_API_KEY, GITHUB_PERSONAL_ACCESS_TOKEN)
@@ -208,7 +208,7 @@ agent_purple/
      - `agents/blue_team_agent.py`
      - `frontend/app.py`
      - `utils/data_fetcher.py`
-     - `utils/github_mcp_client.py`
+     - `utils/github_client.py`
      - `main.py`
 
 2. **Commit Changes:**  
@@ -229,13 +229,13 @@ agent_purple/
    feat(utils): Add data_fetcher to retrieve MITRE ATT&CK and ATLAS data
    ```
 
-2. **Develop `utils/github_mcp_client.py`:**  
-   - Implement functionality to clone repositories, list files, and read file contents using the official GitHub MCP Server
+2. **Develop `utils/github_client.py`:**  
+   - Implement functionality to clone repositories, list files, and read file contents using direct Git operations
    - Test by cloning a sample repository
 
    **Commit Message:**  
    ```
-   feat(utils): Add GitHubMCPClient for repository cloning and file management
+   feat(utils): Add GitHubClient for repository cloning and file management
    ```
 
 ### 4. Develop Agent Modules
@@ -289,7 +289,7 @@ agent_purple/
    ```
 
 2. **Assemble the Report:**  
-   - Use `GitHubMCPClient` to clone the repo, iterate over files, run agents, and compile a Markdown report
+   - Use `GitHubClient` to clone the repo, iterate over files, run agents, and compile a Markdown report
 
    **Commit Message:**  
    ```
@@ -450,29 +450,18 @@ The `utils/data_fetcher.py` module provides functions to retrieve and work with 
 - Document findings in detail in the final report
 - Implement caching to reduce external API calls
 
-### GitHub MCP Server Integration
+### GitHub Client Integration
 
-The Official GitHub MCP Server enables seamless interaction with GitHub repositories for the Agent Purple project.
-
-#### Setting Up the MCP Server
-
-1. **Prerequisites:**
-   - Docker installation
-   - GitHub Personal Access Token with appropriate permissions
-
-2. **Running the MCP Server:**
-   ```bash
-   docker run -i --rm -e GITHUB_PERSONAL_ACCESS_TOKEN=your_github_personal_access_token ghcr.io/github/github-mcp-server
-   ```
+The GitHub client enables seamless interaction with GitHub repositories for the Agent Purple project.
 
 #### Integration with Agent Purple
 
-The `utils/github_mcp_client.py` module interacts with the MCP server to clone repositories, list files, and fetch file contents:
+The `utils/github_client.py` module interacts with GitHub repositories to clone repositories, list files, and fetch file contents:
 
 ```python
-from utils.github_mcp_client import GitHubMCPClient
+from utils.github_client import GitHubClient
 
-client = GitHubMCPClient()
+client = GitHubClient()
 repo_url = "https://github.com/example/repo"
 client.clone_repository(repo_url)
 files = client.list_files()
@@ -480,8 +469,8 @@ files = client.list_files()
 
 #### Best Practices
 - Store the GitHub token securely in the `.env` file
-- Implement proper error handling for MCP interactions
-- Monitor MCP server logs for errors or warnings
+- Implement proper error handling for Git operations
+- Monitor logs for errors or warnings
 
 ### AutoGen Framework for Agent Orchestration
 
