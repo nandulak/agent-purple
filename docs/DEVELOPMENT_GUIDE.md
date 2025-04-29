@@ -24,6 +24,10 @@
   - [Red Team Agent](#red-team-agent)
   - [Motivation Analysis Agent](#motivation-analysis-agent)
   - [Blue Team Agent](#blue-team-agent)
+- [Testing Infrastructure](#testing-infrastructure)
+  - [Unit Testing](#unit-testing)
+  - [AI-Specific Testing](#ai-specific-testing)
+  - [Integration Testing](#integration-testing)
 - [Security and Best Practices](#security-and-best-practices)
   - [Input Validation and Security](#input-validation-and-security)
   - [Code Quality and Documentation](#code-quality-and-documentation)
@@ -45,7 +49,7 @@ Agent Purple is a multi-agent system designed to autonomously analyze GitHub rep
 ### Core Functionality
 The system comprises multiple autonomous agents that work together:
 
-1. **Red Team Agent:** Scans code (using the OpenAI API) for vulnerabilities and maps them to MITRE ATT&CK/ATLAS reference IDs
+1. **Red Team Agent:** Scans code (using the OpenAI GPT-4o API) for vulnerabilities and maps them to MITRE ATT&CK/ATLAS reference IDs
 2. **Motivation Analysis Agent:** Analyzes each vulnerability to infer possible developer motivations behind the code issues
 3. **Blue Team Agent:** Suggests code-level and conceptual fixes for the identified vulnerabilities
 4. **Orchestration Layer:** Uses AutoGen to coordinate the agents
@@ -85,7 +89,7 @@ agent_purple/
 │   ├── mitre_attack/        # Latest MITRE ATT&CK data
 │   └── mitre_atlas/         # Latest MITRE ATLAS data
 ├── agents/
-│   ├── red_team_agent.py                # Vulnerability scanning agent using OpenAI API
+│   ├── red_team_agent.py                # Vulnerability scanning agent using OpenAI GPT-4o API
 │   ├── motivation_analysis_agent.py     # Developer motivation inference agent
 │   └── blue_team_agent.py               # Remediation suggestion agent
 ├── frontend/
@@ -94,6 +98,10 @@ agent_purple/
 │   ├── github_client.py                 # GitHub repository interaction utility (via direct Git operations)
 │   └── data_fetcher.py                  # Fetches MITRE ATT&CK/ATLAS data (using TAXII, requests, and pyyaml)
 ├── tests/                               # Unit and integration tests
+│   ├── test_red_team_agent.py           # General vulnerability tests
+│   ├── test_red_team_ai_vulnerabilities.py # AI-specific vulnerability tests
+│   └── test_red_team_integration.py     # Real-world AI repository testing
+├── test_results/                        # Test output and reports
 ├── .env                                 # Securely stores API keys (e.g., OPENAI_API_KEY, GITHUB_PERSONAL_ACCESS_TOKEN)
 ├── .gitignore                           # Specifies files/folders to ignore in Git (e.g., .env, __pycache__)
 ├── main.py                              # Orchestration of agents and report compilation (with AutoGen integration)
@@ -131,7 +139,7 @@ agent_purple/
      - python=3.12
      - pip
      - pip:
-         - openai==0.27.0
+         - openai>=1.0.0  # Updated to support GPT-4o
          - autogen==0.1.0         # Replace with the latest version
          - gradio==3.30.0
          - requests==2.28.2
@@ -179,6 +187,9 @@ agent_purple/
 
    # Environment variable files
    .env
+   
+   # Test results
+   /test_results/
 
    # Jupyter Notebook checkpoints
    .ipynb_checkpoints/
@@ -201,7 +212,7 @@ agent_purple/
 ### 2. Establish Project Structure
 
 1. **Create Directory Layout and Placeholder Files:**  
-   - Create folders: `data/`, `agents/`, `frontend/`, `utils/`, `tests/`
+   - Create folders: `data/`, `agents/`, `frontend/`, `utils/`, `tests/`, `test_results/`
    - Create empty files for each module:
      - `agents/red_team_agent.py`
      - `agents/motivation_analysis_agent.py`
@@ -241,12 +252,14 @@ agent_purple/
 ### 4. Develop Agent Modules
 
 1. **Implement `agents/red_team_agent.py`:**  
-   - Write the function that uses the OpenAI API to analyze code snippets for vulnerabilities and output results in JSON format
+   - Write the function that uses the OpenAI API with GPT-4o to analyze code snippets for vulnerabilities and output results in JSON format
+   - Implement AI-specific vulnerability detection
+   - Create framework mapping to MITRE ATT&CK and ATLAS
    - Test with sample code snippets
 
    **Commit Message:**  
    ```
-   feat(agents): Implement red_team_agent for vulnerability scanning using OpenAI API
+   feat(agents): Implement red_team_agent for vulnerability scanning using OpenAI GPT-4o API
    ```
 
 2. **Implement `agents/motivation_analysis_agent.py`:**  
@@ -311,7 +324,17 @@ agent_purple/
 
 ### 7. Testing and Refinement
 
-1. **Test End-to-End Flow:**  
+1. **Develop Comprehensive Test Suite:**  
+   - Create general test file: `tests/test_red_team_agent.py`
+   - Create AI-specific test file: `tests/test_red_team_ai_vulnerabilities.py`
+   - Create integration test file: `tests/test_red_team_integration.py`
+
+   **Commit Message:**  
+   ```
+   feat(tests): Add comprehensive test suite for Red Team Agent
+   ```
+
+2. **Test End-to-End Flow:**  
    - Validate complete flow via CLI and frontend
 
    **Commit Message:**  
@@ -319,20 +342,12 @@ agent_purple/
    fix: Resolve integration issues between agents and improve error handling during repo analysis
    ```
 
-2. **Documentation and Cleanup:**  
+3. **Documentation and Cleanup:**  
    - Refactor code, update README, and comment functions for clarity
 
    **Commit Message:**  
    ```
    docs: Update README and add inline documentation for clarity
-   ```
-
-3. **Add Unit Tests:**  
-   - Add tests for utility functions or JSON structure
-
-   **Commit Message:**  
-   ```
-   test: Add basic unit tests for utility modules and agent functions
    ```
 
 ### 8. Deployment
@@ -556,7 +571,7 @@ DSPy (Declarative Self-improving Python) is a framework for programming language
 
 ### Red Team Agent
 
-The Red Team Agent is responsible for scanning code repositories to identify vulnerabilities in AI-enabled systems. It leverages the OpenAI API to analyze code snippets and maps identified issues to the MITRE ATT&CK and ATLAS frameworks.
+The Red Team Agent is responsible for scanning code repositories to identify vulnerabilities in AI-enabled systems. It leverages the OpenAI API with GPT-4o model to analyze code snippets and maps identified issues to the MITRE ATT&CK and ATLAS frameworks.
 
 **Key Responsibilities:**
 - Analyze code snippets for security vulnerabilities
@@ -565,10 +580,41 @@ The Red Team Agent is responsible for scanning code repositories to identify vul
 - Output structured data about identified vulnerabilities
 
 **Implementation Guidelines:**
-1. Use the OpenAI API with appropriate prompts for code analysis
+1. Use the OpenAI API with GPT-4o for enhanced code analysis capability
 2. Implement caching to minimize redundant API calls
 3. Structure the output in a consistent JSON format
 4. Include severity ratings for each vulnerability
+
+**Code Example:**
+```python
+@cache_api_call
+def analyze_code_with_openai(code_snippet: str, file_path: str) -> Dict[str, Any]:
+    """
+    Use OpenAI API to analyze a code snippet for vulnerabilities.
+    
+    Args:
+        code_snippet: String containing the code to analyze
+        file_path: Path to the file being analyzed
+        
+    Returns:
+        Dictionary containing identified vulnerabilities
+    """
+    try:
+        # Call OpenAI API using GPT-4o model
+        response = client.chat.completions.create(
+            model="gpt-4o",  # Using the more powerful GPT-4o model
+            messages=[
+                {"role": "system", "content": "You are a security expert..."},
+                {"role": "user", "content": f"Analyze this code: {code_snippet}"}
+            ],
+            temperature=0.2,
+        )
+        # Process response
+        return parsed_result
+    except Exception as e:
+        logger.error(f"Error: {str(e)}")
+        return {"vulnerabilities": []}
+```
 
 ### Motivation Analysis Agent
 
@@ -603,6 +649,80 @@ The Blue Team Agent suggests remediation strategies for the vulnerabilities iden
 2. Structure recommendations in a clear, actionable format
 3. Include both quick fixes and long-term remediation strategies
 4. Reference relevant security standards or guidelines
+
+---
+
+## Testing Infrastructure
+
+### Unit Testing
+
+The project includes comprehensive unit tests to verify the functionality of individual components:
+
+1. **General Red Team Agent Tests (`tests/test_red_team_agent.py`):**
+   - Tests the core vulnerability scanning functionality
+   - Verifies mapping to MITRE frameworks
+   - Tests file filtering logic
+   - Tests the cache mechanism to avoid redundant API calls
+
+2. **Running Unit Tests:**
+   ```bash
+   # Run the unit tests
+   python -m pytest tests/test_red_team_agent.py
+   ```
+
+### AI-Specific Testing
+
+Specialized testing for AI-specific vulnerabilities is implemented in `tests/test_red_team_ai_vulnerabilities.py`:
+
+1. **Features Tested:**
+   - Detection of AI-specific vulnerabilities (e.g., data poisoning, model evasion)
+   - Mapping to MITRE ATLAS framework
+   - Severity ratings for AI vulnerabilities
+   
+2. **Testing Setup:**
+   ```python
+   @pytest.fixture
+   def ai_model_with_vulnerabilities():
+       """Sample AI model code with intentional vulnerabilities."""
+       return """
+       import tensorflow as tf
+       import pickle
+       
+       class VulnerableAIModel:
+           # Intentionally vulnerable code for testing
+           def load_model(self, model_path):
+               with open(model_path, 'rb') as f:
+                   self.model = pickle.load(f)  # Insecure deserialization
+       """
+   ```
+
+3. **Running AI-Specific Tests:**
+   ```bash
+   python -m pytest tests/test_red_team_ai_vulnerabilities.py
+   ```
+
+### Integration Testing
+
+The integration tests in `tests/test_red_team_integration.py` validate the Red Team Agent against real-world AI code repositories:
+
+1. **Features Tested:**
+   - End-to-end functionality with real AI repositories
+   - Performance with larger codebases
+   - Accuracy of vulnerability detection
+   - Integration with MITRE frameworks
+
+2. **Setting Up Integration Tests:**
+   ```bash
+   # Set the environment variable to run integration tests
+   export RUN_INTEGRATION_TESTS=1
+   
+   # Run the integration tests
+   python tests/test_red_team_integration.py
+   ```
+
+3. **Test Results:**
+   - Integration test results are saved in the `test_results/` directory
+   - Results include detected vulnerabilities and their mappings to frameworks
 
 ---
 
