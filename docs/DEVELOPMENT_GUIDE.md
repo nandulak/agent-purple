@@ -610,6 +610,9 @@ def analyze_code_with_openai(code_snippet: str, file_path: str) -> Dict[str, Any
             temperature=0.2,
         )
         # Process response
+        parsed_result = {
+            "vulnerabilities": response.get("choices", [{}])[0].get("message", {}).get("content", "No vulnerabilities found.")
+        }
         return parsed_result
     except Exception as e:
         logger.error(f"Error: {str(e)}")
