@@ -40,7 +40,7 @@ $ python frontend/app.py
 ```
 
 ## Features
-- **Red Team Agent:** Scans code for vulnerabilities using OpenAI API.
+- **Red Team Agent:** Scans code for vulnerabilities using OpenAI's GPT-4o API, including AI-specific vulnerabilities detection and mapping to MITRE ATT&CK and ATLAS frameworks.
 - **Motivation Analysis Agent:** Analyzes developer motivations behind vulnerabilities.
 - **Blue Team Agent:** Suggests fixes for identified issues.
 - **Orchestration:** Coordinates agents using AutoGen.
@@ -48,6 +48,27 @@ $ python frontend/app.py
 - **Data Fetcher:** Retrieves and processes MITRE ATT&CK and ATLAS data with intelligent caching.
 
 ## Core Components
+
+### Red Team Agent
+The `agents/red_team_agent.py` module provides comprehensive code vulnerability scanning using OpenAI's GPT-4o model:
+
+- Identifies common security vulnerabilities in code repositories
+- Detects AI-specific vulnerabilities in machine learning codebases
+- Maps vulnerabilities to MITRE ATT&CK and ATLAS frameworks
+- Provides severity ratings and detailed explanations of vulnerabilities
+- Implements result caching to minimize redundant API calls
+
+To run tests for the Red Team Agent:
+```bash
+# Run the Red Team Agent tests
+$ python -m pytest tests/test_red_team_agent.py tests/test_red_team_ai_vulnerabilities.py
+```
+
+To run an integration test with a real AI repository:
+```bash
+# Run the integration test with a real AI codebase
+$ python tests/test_red_team_integration.py
+```
 
 ### Data Fetcher
 The `utils/data_fetcher.py` module provides comprehensive functionality for retrieving, parsing, and utilizing threat intelligence data:
@@ -71,10 +92,18 @@ agent_purple/
 │   ├── mitre_attack/         # Local cache for ATT&CK data
 │   └── mitre_atlas/          # Local cache for ATLAS data
 ├── agents/                   # Agent modules
+│   ├── red_team_agent.py     # Vulnerability scanning with GPT-4o
+│   ├── motivation_analysis_agent.py
+│   └── blue_team_agent.py
 ├── frontend/                 # Gradio-based frontend
 ├── utils/                    # Utility modules
 │   ├── data_fetcher.py       # MITRE data retrieval and processing
-│   └── github_mcp_client.py  # GitHub repository interaction
+│   └── github_client.py      # GitHub repository interaction
+├── tests/                    # Test suite
+│   ├── test_red_team_agent.py              # General vulnerability tests
+│   ├── test_red_team_ai_vulnerabilities.py # AI-specific vulnerability tests
+│   └── test_red_team_integration.py        # Real-world AI repo testing
+├── test_results/             # Test output and reports
 ├── .env                      # API keys and tokens
 ├── environment.yml           # Conda environment definition
 ├── main.py                   # Orchestration script

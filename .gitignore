@@ -16,6 +16,9 @@ __pycache__/
 *.log
 *.report
 
+# Test results
+/test_results/
+
 # AutoGen cache
 .autogen_cache/
 
