@@ -88,6 +88,26 @@ $ python -m pytest tests/test_motivation_analysis_agent.py
 $ python -c "import os; os.environ['RUN_INTEGRATION_TESTS'] = '1'; import pytest; pytest.main(['-v', 'tests/test_motivation_analysis_agent.py::test_integration_with_red_team_agent', 'tests/test_motivation_analysis_agent.py::test_end_to_end_analysis_flow'])"
 ```
 
+### Blue Team Agent
+The `agents/blue_team_agent.py` module provides comprehensive remediation strategies for vulnerabilities identified by the Red Team Agent:
+
+- Generates code-level fixes with detailed explanations for identified vulnerabilities
+- Takes into account developer motivations from the Motivation Analysis Agent to provide targeted solutions
+- Suggests conceptual recommendations to prevent similar vulnerabilities in the future
+- Provides organizational improvements for long-term security enhancement
+- Creates a prioritized list of actions to address vulnerabilities based on severity and impact
+- Recommends security frameworks, training resources, and monitoring tools
+- Includes links to security standards and best practices resources
+
+To run tests for the Blue Team Agent:
+```bash
+# Run unit tests
+$ python -m pytest tests/test_blue_team_agent.py
+
+# Run integration tests with the Red Team Agent and Motivation Analysis Agent
+$ python -m pytest tests/test_blue_team_integration.py
+```
+
 ### Data Fetcher
 The `utils/data_fetcher.py` module provides comprehensive functionality for retrieving, parsing, and utilizing threat intelligence data:
 
@@ -121,7 +141,8 @@ agent_purple/
 │   ├── test_red_team_agent.py              # General vulnerability tests
 │   ├── test_red_team_ai_vulnerabilities.py # AI-specific vulnerability tests
 │   ├── test_red_team_integration.py        # Real-world AI repo testing
-│   └── test_motivation_analysis_agent.py   # Developer motivation analysis tests
+│   ├── test_motivation_analysis_agent.py   # Developer motivation analysis tests
+│   └── test_blue_team_agent.py             # Remediation recommendation tests
 ├── test_results/             # Test output and reports
 ├── .env                      # API keys and tokens
 ├── environment.yml           # Conda environment definition

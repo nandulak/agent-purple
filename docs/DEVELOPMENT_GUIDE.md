@@ -699,19 +699,79 @@ The Motivation Analysis Agent is fully implemented in `agents/motivation_analysi
 
 ### Blue Team Agent
 
-The Blue Team Agent suggests remediation strategies for the vulnerabilities identified by the Red Team Agent, taking into account the developer motivations analyzed by the Motivation Analysis Agent.
+The Blue Team Agent is responsible for providing remediation strategies and code fixes for vulnerabilities identified by the Red Team Agent. It takes into account developer motivations identified by the Motivation Analysis Agent to provide more targeted and effective fixes.
 
-**Key Responsibilities:**
-- Generate code-level fixes for identified vulnerabilities
-- Provide conceptual guidance for addressing systemic issues
-- Prioritize recommendations based on severity and impact
-- Link suggestions to industry best practices
+#### Implementation Guidelines
 
-**Implementation Guidelines:**
-1. Use the OpenAI API to generate code fixes
-2. Structure recommendations in a clear, actionable format
-3. Include both quick fixes and long-term remediation strategies
-4. Reference relevant security standards or guidelines
+1. **Core Functionality:**
+   - Generate code-level fixes for specific vulnerabilities
+   - Suggest conceptual recommendations to prevent similar vulnerabilities
+   - Provide organizational improvements for long-term security enhancements
+   - Analyze patterns across multiple vulnerabilities to create overall recommendations
+
+2. **API Integration:**
+   - Use OpenAI's GPT-4o model for generating high-quality remediation strategies
+   - Implement caching to minimize redundant API calls and reduce costs
+   - Handle API errors gracefully and provide fallback options
+
+3. **Input Processing:**
+   - Accept vulnerabilities from Red Team Agent in structured format
+   - Incorporate motivation analyses from Motivation Analysis Agent
+   - Handle various input formats (single vulnerability, vulnerability sets, repository results)
+
+4. **Output Structure:**
+   - Provide structured JSON output with:
+     - Vulnerability summary and fix difficulty rating
+     - Code-level fixes with descriptions and explanations
+     - Conceptual recommendations for better coding practices
+     - Organizational improvements for security culture
+     - Relevant security standards and resources
+
+5. **Performance Optimization:**
+   - Use caching decorator for API responses
+   - Implement concurrent processing for multiple vulnerabilities
+   - Provide progress tracking for long-running operations
+
+#### API Design
+The `blue_team_agent.py` module should expose the following functions:
+
+```python
+def generate_vulnerability_fix(vulnerability, motivation_analysis=None): 
+    """Generate a fix for a specific vulnerability with optional motivation analysis."""
+    # Implementation
+
+def generate_fixes_for_vulnerability_set(vulnerabilities, motivation_analyses=None):
+    """Generate fixes for multiple vulnerabilities with optional motivation analyses."""
+    # Implementation
+
+def generate_overall_recommendations(fix_results):
+    """Generate overall security recommendations based on multiple vulnerability fixes."""
+    # Implementation
+
+def process_repository_results(red_team_results, motivation_results=None):
+    """Process complete repository scan results to generate comprehensive remediations."""
+    # Implementation
+
+def blue_team_agent_function(input_data, motivation_data=None):
+    """Main entry point for AutoGen integration."""
+    # Implementation
+```
+
+#### Testing Strategy
+1. **Unit Tests:**
+   - Test fix generation for individual vulnerabilities
+   - Test handling of various input formats
+   - Test error handling and fallback mechanisms
+   - Test caching functionality
+
+2. **Integration Tests:**
+   - Test integration with Red Team Agent output
+   - Test integration with Motivation Analysis Agent output
+   - Test end-to-end remediation flow with real-world vulnerabilities
+
+3. **Mock Testing:**
+   - Use mock OpenAI API responses for consistent and fast testing
+   - Validate prompt construction and response parsing
 
 ---
 
