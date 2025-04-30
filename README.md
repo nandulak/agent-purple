@@ -70,6 +70,24 @@ To run an integration test with a real AI repository:
 $ python tests/test_red_team_integration.py
 ```
 
+### Motivation Analysis Agent
+The `agents/motivation_analysis_agent.py` module analyzes vulnerabilities identified by the Red Team Agent to infer possible developer motivations:
+
+- Uses GPT-4o to perform psychological analysis of developer motivations behind vulnerabilities
+- Categorizes motivations (e.g., convenience, knowledge gap, deadline pressure)
+- Identifies patterns across multiple vulnerabilities in a repository
+- Generates organizational recommendations to address root causes
+- Implements caching to optimize performance and reduce API costs
+
+To run tests for the Motivation Analysis Agent:
+```bash
+# Run unit tests
+$ python -m pytest tests/test_motivation_analysis_agent.py
+
+# Run integration tests with the Red Team Agent
+$ python -c "import os; os.environ['RUN_INTEGRATION_TESTS'] = '1'; import pytest; pytest.main(['-v', 'tests/test_motivation_analysis_agent.py::test_integration_with_red_team_agent', 'tests/test_motivation_analysis_agent.py::test_end_to_end_analysis_flow'])"
+```
+
 ### Data Fetcher
 The `utils/data_fetcher.py` module provides comprehensive functionality for retrieving, parsing, and utilizing threat intelligence data:
 
@@ -93,8 +111,8 @@ agent_purple/
 │   └── mitre_atlas/          # Local cache for ATLAS data
 ├── agents/                   # Agent modules
 │   ├── red_team_agent.py     # Vulnerability scanning with GPT-4o
-│   ├── motivation_analysis_agent.py
-│   └── blue_team_agent.py
+│   ├── motivation_analysis_agent.py  # Developer motivation inference
+│   └── blue_team_agent.py    # Remediation recommendation
 ├── frontend/                 # Gradio-based frontend
 ├── utils/                    # Utility modules
 │   ├── data_fetcher.py       # MITRE data retrieval and processing
@@ -102,7 +120,8 @@ agent_purple/
 ├── tests/                    # Test suite
 │   ├── test_red_team_agent.py              # General vulnerability tests
 │   ├── test_red_team_ai_vulnerabilities.py # AI-specific vulnerability tests
-│   └── test_red_team_integration.py        # Real-world AI repo testing
+│   ├── test_red_team_integration.py        # Real-world AI repo testing
+│   └── test_motivation_analysis_agent.py   # Developer motivation analysis tests
 ├── test_results/             # Test output and reports
 ├── .env                      # API keys and tokens
 ├── environment.yml           # Conda environment definition
