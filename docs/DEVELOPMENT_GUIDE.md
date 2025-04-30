@@ -99,7 +99,7 @@ agent_purple/
 │   └── data_fetcher.py                  # Fetches MITRE ATT&CK/ATLAS data (using TAXII, requests, and pyyaml)
 ├── tests/                               # Unit and integration tests
 │   ├── test_red_team_agent.py           # General vulnerability tests
-│   ├── test_red_team_ai_vulnerabilities.py # AI-specific vulnerability tests
+│  
 │   └── test_red_team_integration.py     # Real-world AI repository testing
 ├── test_results/                        # Test output and reports
 ├── .env                                 # Securely stores API keys (e.g., OPENAI_API_KEY, GITHUB_PERSONAL_ACCESS_TOKEN)
@@ -623,19 +623,79 @@ def analyze_code_with_openai(code_snippet: str, file_path: str) -> Dict[str, Any
 
 The Motivation Analysis Agent examines vulnerabilities identified by the Red Team Agent to infer the developer's thought process or intent behind implementing potentially vulnerable code.
 
+**Implementation Status: COMPLETED**
+
 **Key Objectives:**
 - Understand developer intent behind vulnerable code
 - Provide context for why vulnerabilities might have been introduced
 - Aid in root cause analysis and prioritization of fixes
+- Identify patterns across multiple vulnerabilities in a repository
+- Generate organizational recommendations to address systemic issues
+
+**Implementation Details:**
+
+The Motivation Analysis Agent is fully implemented in `agents/motivation_analysis_agent.py`. Key features include:
+
+1. **Motivation Categories:** The agent categorizes motivations into predefined types:
+   - CONVENIENCE: Developer chose to implement a solution that was simpler or faster to code
+   - KNOWLEDGE_GAP: Developer lacked necessary security knowledge or awareness
+   - DEADLINE_PRESSURE: Developer was under time pressure to deliver functionality
+   - OVERSIGHT: Developer overlooked potential security implications
+   - TESTING: Code was intended for testing purposes, not production
+   - LEGACY: Code was inherited from legacy systems or practices
+   - ABSTRACTION_TRUST: Developer trusted an underlying framework or library without verification
+
+2. **Comprehensive Analysis:** For each vulnerability, the agent provides:
+   - Primary motivation with detailed description
+   - Secondary motivations that might apply
+   - Psychological analysis of the developer thought process
+   - Organizational factors that may have contributed
+   - Confidence level in the analysis
+
+3. **Pattern Recognition:** When analyzing multiple vulnerabilities, the agent identifies:
+   - Distribution of motivation types across vulnerabilities
+   - Common underlying factors
+   - Organizational recommendations to address root causes
+   - Confidence level in the pattern analysis
+
+4. **Performance Features:**
+   - Implements API call caching to reduce redundant requests
+   - Provides error handling and graceful degradation
+   - Includes comprehensive logging for debugging and audit purposes
+
+5. **Testing Status:**
+   - Unit tests complete and passing (tests/test_motivation_analysis_agent.py)
+   - Integration tests with Red Team Agent complete and passing
+   - End-to-end workflow tests complete and successful
+
+**Example Output:**
+```json
+{
+  "primary_motivation": {
+    "category": "CONVENIENCE",
+    "description": "Developer chose directly concatenating user input for simplicity",
+    "category_description": "Developer chose to implement a solution that was simpler or faster to code"
+  },
+  "secondary_motivations": [
+    {
+      "category": "KNOWLEDGE_GAP",
+      "description": "Developer likely unaware of SQL injection vulnerabilities"
+    }
+  ],
+  "thought_process_analysis": "Prioritized functionality over security considerations",
+  "organizational_factors": [
+    "Lack of security training for developers",
+    "Absence of code review processes focusing on security" 
+  ],
+  "confidence_level": "HIGH"
+}
+```
 
 **Integration with the Workflow:**
-1. Receives a list of vulnerabilities identified by the Red Team Agent
-2. Uses NLP and contextual analysis to infer motivations
-3. Produces a report detailing the inferred motivations for each vulnerability
-
-**Example Use Case:**
-- **Vulnerability:** Hardcoded credentials found in the code
-- **Inferred Motivation:** Developer might have hardcoded credentials for quick testing or due to lack of awareness about secure credential management
+1. Receives vulnerabilities identified by the Red Team Agent
+2. Uses OpenAI GPT-4o for psychological analysis to infer motivations
+3. Processes all vulnerabilities to identify patterns
+4. Produces a comprehensive report with individual analyses and organizational recommendations
 
 ### Blue Team Agent
 
